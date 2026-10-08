@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MPT4 Bahasa Melayu Tahun 4 — Permainan Interaktif</title>
+<style>
+:root{--ink:#17324d;--pink:#ff5fa2;--blue:#4e8cff;--yellow:#ffd84d;--green:#39c98b;--purple:#8b6cff;--card:rgba(255,255,255,.94)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:"Trebuchet MS",system-ui,sans-serif;color:var(--ink)}
+body{overflow-x:hidden;background:linear-gradient(135deg,#bff4ff,#d9d0ff 48%,#ffd5e9);background-size:200% 200%;animation:bg 12s ease infinite}
+@keyframes bg{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+.bubble{position:fixed;border-radius:50%;opacity:.42;filter:blur(1px);z-index:-1;animation:float 9s ease-in-out infinite}
+.b1{width:130px;height:130px;background:#fff;left:3%;top:10%}.b2{width:90px;height:90px;background:#ffd84d;right:5%;top:24%;animation-delay:2s}.b3{width:150px;height:150px;background:#8b6cff;right:15%;bottom:4%;animation-delay:4s}
+@keyframes float{50%{transform:translateY(-28px) rotate(8deg)}}
+.wrap{max-width:1050px;margin:auto;padding:18px 14px 40px}.top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.brand{background:var(--card);border-radius:22px;padding:14px 18px;box-shadow:0 10px 28px #5261a122}
+.brand h1{font-size:clamp(1.35rem,4vw,2.2rem);margin:0}.brand p{margin:4px 0 0;font-weight:700;color:#5a6580}
+.btn{border:0;border-radius:15px;padding:12px 16px;font-weight:800;cursor:pointer;box-shadow:0 6px 14px #45506b22;transition:.18s;touch-action:manipulation}
+.btn:hover{transform:translateY(-2px)}.sound{background:#fff}.primary{background:var(--purple);color:white}.green{background:var(--green);color:#063a27}.yellow{background:var(--yellow);color:#5c4500}
+.screen{display:none;margin-top:16px}.screen.active{display:block}
+.card{background:var(--card);border:2px solid #ffffffaa;border-radius:28px;padding:22px;box-shadow:0 14px 35px #3c527022}
+.hero{text-align:center;padding:30px 20px}.hero .emoji{font-size:4.2rem;animation:bounce 2s infinite}.hero h2{font-size:clamp(1.7rem,5vw,2.7rem);margin:8px 0}.hero p{font-size:1.05rem}
+@keyframes bounce{50%{transform:translateY(-10px) rotate(3deg)}}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:760px;margin:18px auto}
+input{width:100%;padding:14px;border:2px solid #d8ddec;border-radius:14px;font-size:1rem;outline:none}input:focus{border-color:var(--purple)}
+.meta{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.level{font-weight:900;background:#fff;border-radius:999px;padding:8px 13px}.progress{height:12px;background:#e9e8f4;border-radius:99px;overflow:hidden;flex:1;min-width:160px}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--pink));transition:.35s}
+.qbox{text-align:center}.qnum{font-weight:900;color:#68728b}.question{font-size:clamp(1.25rem,3.8vw,1.75rem);font-weight:900;line-height:1.35;margin:15px auto 20px;max-width:800px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:820px;margin:auto}.opt{background:white;border:3px solid #e6e8f2;border-radius:18px;padding:16px;text-align:left;font-size:1rem;font-weight:800;cursor:pointer;transition:.16s}.opt:hover{border-color:var(--blue);transform:scale(1.01)}.opt.correct{background:#d9faed;border-color:var(--green)}.opt.wrong{background:#ffe1e8;border-color:var(--pink)}
+.feedback{min-height:55px;margin-top:15px;text-align:center;font-size:1.15rem;font-weight:900}.feedback.good{color:#07925c}.feedback.bad{color:#d52b5f}.nextrow{text-align:center;margin-top:5px}
+.note{margin-top:15px;background:#f8f7ff;border-radius:18px;padding:14px}.note h3{margin:0 0 7px}.note ul{margin:7px 0 0;padding-left:22px}
+.stars{font-size:2rem;letter-spacing:5px}.result{text-align:center}.scorebig{font-size:3.5rem;font-weight:1000}.rank{font-size:1.25rem;font-weight:900}.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.stat{background:#fff;border-radius:18px;padding:15px}.stat b{display:block;font-size:1.7rem}
+.notesgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.noteCard{background:white;border-radius:20px;padding:16px;border-left:8px solid var(--purple)}.noteCard h3{margin:0 0 7px}.creator{text-align:center;margin-top:14px;color:#59637c;font-size:.9rem}
+.shake{animation:shake .3s}.pop{animation:pop .35s}@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}@keyframes pop{50%{transform:scale(1.05)}}
+@media(max-width:650px){.formgrid,.options,.notesgrid{grid-template-columns:1fr}.wrap{padding:10px 10px 28px}.card{padding:16px}.hero{padding:22px 12px}.top{align-items:stretch}.top .btn{width:100%}.statgrid{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="bubble b1"></div><div class="bubble b2"></div><div class="bubble b3"></div>
+<div class="wrap">
+  <div class="top">
+    <div class="brand"><h1>🌈 MPT4 Bahasa Melayu Tahun 4</h1><p>Permainan Interaktif • 25 Soalan • 3 Tahap</p></div>
+    <button class="btn sound" id="soundBtn" onclick="toggleSound()">🔊 Bunyi: ON</button>
+  </div>
+
+  <section id="home" class="screen active">
+    <div class="card hero">
+      <div class="emoji">🧠✨🎮</div>
+      <h2>Jelajah Dunia Bahasa!</h2>
+      <p>Jawab 25 soalan, kumpul ⭐ dan cabar diri melalui 3 tahap.</p>
+      <div class="formgrid">
+        <input id="studentName" placeholder="Nama murid" maxlength="60">
+        <input id="creatorName" placeholder="Nama pembina / guru (pilihan)" maxlength="60" value="MUHAMAD SYAWALWAHED">
+      </div>
+      <button class="btn primary" onclick="startGame()">🚀 Mula Permainan</button>
+      <button class="btn yellow" onclick="showScreen('notes')">📚 Buka Nota Infografik</button>
+      <div class="creator">Sekolah: SK (P) JALAN YAHYA AWAL</div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <b>🎯 Fokus:</b> memahami bahan, tatabahasa, kosa kata, binaan ayat dan penggunaan bahasa dalam konteks.
+      <br><b>📌 Selaras dengan:</b> DSKP Bahasa Melayu Tahun 4 (KSSR).
+    </div>
+  </section>
+
+  <section id="notes" class="screen">
+    <div class="card">
+      <h2>📚 Nota Infografik MPT4</h2>
+      <div class="notesgrid">
+        <div class="noteCard"><h3>🟣 Kata Nama</h3><p>Kata nama merujuk orang, haiwan, benda atau tempat. Contoh: <b>guru, kucing, buku, sekolah</b>.</p></div>
+        <div class="noteCard"><h3>🔵 Kata Kerja</h3><p>Kata yang menunjukkan perbuatan. Contoh: <b>membaca, berlari, menulis, menyanyi</b>.</p></div>
+        <div class="noteCard"><h3>🟡 Kata Adjektif</h3><p>Kata yang menerangkan sifat atau keadaan. Contoh: <b>cantik, rajin, tinggi, manis</b>.</p></div>
+        <div class="noteCard"><h3>🟢 Penjodoh Bilangan</h3><p>Contoh: <b>seorang</b> murid, <b>seekor</b> kucing, <b>sebatang</b> pensel, <b>sehelai</b> kertas.</p></div>
+        <div class="noteCard"><h3>🩷 Imbuhan</h3><p>Imbuhan boleh membentuk perkataan baharu. Contoh: <b>ajar → mengajar</b>, <b>tulis → menulis</b>.</p></div>
+        <div class="noteCard"><h3>🟠 Simpulan Bahasa</h3><p>Contoh: <b>ringan tulang</b> = rajin membantu; <b>buah tangan</b> = hadiah yang dibawa.</p></div>
+        <div class="noteCard"><h3>🔷 Ayat Majmuk</h3><p>Ayat yang menggabungkan dua atau lebih ayat menggunakan kata hubung seperti <b>dan, kerana, tetapi, supaya</b>.</p></div>
+        <div class="noteCard"><h3>⭐ Kesantunan Bahasa</h3><p>Gunakan kata yang sopan seperti <b>sila, tolong, maaf, terima kasih</b> mengikut situasi.</p></div>
+      </div>
+      <div style="text-align:center;margin-top:18px"><button class="btn primary" onclick="showScreen('home')">↩ Kembali</button></div>
+    </div>
+  </section>
+
+  <section id="game" class="screen">
+    <div class="card">
+      <div class="meta">
+        <span class="level" id="level">Tahap 1</span>
+        <div class="progress"><div class="bar" id="bar"></div></div>
+        <span>⭐ <b id="starCount">0</b></span>
+      </div>
+      <div class="qbox">
+        <div class="qnum" id="qnum"></div>
+        <div class="question" id="question"></div>
+        <div class="options" id="options"></div>
+        <div id="feedback" class="feedback"></div>
+        <div class="nextrow"><button id="nextBtn" class="btn primary" style="display:none" onclick="nextQuestion()">Soalan Seterusnya ➜</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="result" class="screen">
+    <div class="card result">
+      <div style="font-size:4rem">🏆🎉🌟</div>
+      <h2>Tahniah, <span id="resultName"></span>!</h2>
+      <div class="scorebig" id="score"></div>
+      <div class="stars" id="stars"></div>
+      <div class="rank" id="rank"></div>
+      <div class="statgrid">
+        <div class="stat"><b id="correctStat">0</b>Betul</div>
+        <div class="stat"><b id="attemptStat">0</b>Cubaan</div>
+        <div class="stat"><b id="percentStat">0%</b>Skor</div>
+      </div>
+      <p id="resultMsg"></p>
+      <button class="btn primary" onclick="restart()">🔁 Main Semula</button>
+      <button class="btn yellow" onclick="showScreen('notes')">📚 Ulang Kaji Nota</button>
+      <div class="creator" id="creatorResult"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const questions = [
+{l:1,q:"Pilih kata nama yang betul dalam ayat: “_____ itu sedang membaca buku.”",o:["Murid","Membaca","Rajin","Cepat"],a:0,e:"Murid ialah kata nama yang merujuk orang."},
+{l:1,q:"Pilih kata kerja: “Adik _____ bola di padang.”",o:["merah","bermain","bola","padang"],a:1,e:"Bermain ialah perbuatan."},
+{l:1,q:"Apakah kata adjektif dalam ayat “Bunga itu sangat cantik”?",o:["Bunga","itu","sangat","cantik"],a:3,e:"Cantik menerangkan sifat bunga."},
+{l:1,q:"Penjodoh bilangan yang sesuai: “_____ ekor ayam berada di reban.”",o:["seorang","sebuah","seekor","sehelai"],a:2,e:"Seekor digunakan untuk haiwan."},
+{l:1,q:"Pilih ejaan yang betul.",o:["sekolahh","sekolah","sekola","skolah"],a:1,e:"Ejaan yang betul ialah sekolah."},
+{l:1,q:"Kata hubung yang sesuai: “Aiman belajar bersungguh-sungguh _____ berjaya dalam peperiksaan.”",o:["kerana","supaya","tetapi","dan"],a:1,e:"Supaya menunjukkan tujuan."},
+{l:1,q:"Apakah maksud simpulan bahasa “ringan tulang”?",o:["Mempunyai tulang kecil","Rajin membantu","Suka tidur","Mudah sakit"],a:1,e:"Ringan tulang bermaksud rajin melakukan kerja atau membantu."},
+{l:1,q:"Pilih ayat yang paling santun.",o:["Ambil buku itu!","Tolong ambilkan buku itu.","Kau ambil buku sekarang.","Bagi aku buku."],a:1,e:"Tolong menjadikan permintaan lebih santun."},
+
+{l:2,q:"Pilih ayat yang menggunakan imbuhan awalan dengan betul.",o:["Ali menulis surat.","Ali tulis surat.","Ali mentulis surat.","Ali penulis surat."],a:0,e:"Kata dasar tulis menerima awalan meN- menjadi menulis."},
+{l:2,q:"Pilih penjodoh bilangan yang tepat: “Ibu membeli _____ kain batik.”",o:["sehelai","sebatang","sebiji","seekor"],a:0,e:"Sehelai digunakan untuk kain atau benda yang nipis dan lebar."},
+{l:2,q:"Apakah kata kerja dalam ayat “Kakak sedang menyiram pokok bunga”?",o:["Kakak","sedang","menyiram","bunga"],a:2,e:"Menyiram ialah perbuatan."},
+{l:2,q:"Pilih ayat yang betul.",o:["Mereka-mereka sedang bermain.","Mereka sedang bermain di taman.","Mereka sedang bermain di tamans.","Mereka bermain sedang di taman."],a:1,e:"Susunan dan penggunaan perkataan dalam ayat itu betul."},
+{l:2,q:"Apakah maksud “buah tangan”?",o:["Buah yang dipegang","Hadiah yang dibawa","Tangan yang besar","Makanan buah-buahan"],a:1,e:"Buah tangan ialah hadiah yang dibawa untuk seseorang."},
+{l:2,q:"Pilih kata yang paling sesuai: “Siti _____ kerana mendapat hadiah.”",o:["gembira","berlari","buku","sebuah"],a:0,e:"Gembira ialah kata adjektif yang menerangkan perasaan."},
+{l:2,q:"Gabungkan ayat: “Hana membaca buku. Hana menulis nota.”",o:["Hana membaca buku tetapi menulis nota.","Hana membaca buku dan menulis nota.","Hana membaca buku kerana menulis nota.","Hana membaca buku supaya menulis nota."],a:1,e:"Dan sesuai untuk menggabungkan dua perbuatan yang dilakukan."},
+{l:2,q:"Pilih ayat yang menggunakan kata “kerana” dengan tepat.",o:["Saya membawa payung kerana hari hujan.","Saya kerana membawa payung hari.","Kerana saya membawa payung hari.","Saya membawa kerana payung hujan."],a:0,e:"Kerana menerangkan sebab."},
+
+{l:3,q:"Baca: “Amir bangun awal. Dia bersarapan sebelum pergi ke sekolah.” Apakah kesimpulan yang paling sesuai?",o:["Amir tidak pergi ke sekolah.","Amir membuat persediaan sebelum ke sekolah.","Amir bermain sepanjang pagi.","Amir tidak bersarapan."],a:1,e:"Maklumat menunjukkan Amir bangun awal dan bersarapan sebelum sekolah."},
+{l:3,q:"Pilih ayat yang paling tepat untuk poster menjaga kebersihan.",o:["Buang sampah merata-rata.","Jagalah kebersihan sekolah kita.","Sampah itu tidak penting.","Jangan pedulikan kebersihan."],a:1,e:"Ayat itu jelas dan berbentuk ajakan yang positif."},
+{l:3,q:"Pilih perkataan yang paling sesuai: “Walaupun hujan lebat, murid-murid _____ hadir ke sekolah.”",o:["tetap","sangat","sebuah","seekor"],a:0,e:"Tetap menunjukkan tindakan yang diteruskan walaupun ada halangan."},
+{l:3,q:"Apakah ayat yang paling sesuai sebagai penutup surat kepada guru?",o:["Sekian, terima kasih.","Oi, cikgu!","Jumpa lagi bro.","Saya dah habis."],a:0,e:"“Sekian, terima kasih” sesuai untuk penutup surat yang santun."},
+{l:3,q:"Pilih peribahasa yang paling sesuai: “Kita perlu bekerjasama untuk menyiapkan projek kelas.”",o:["Bagai aur dengan tebing","Seperti katak di bawah tempurung","Bagai mencurah air ke daun keladi","Ada udang di sebalik batu"],a:0,e:"Bagai aur dengan tebing menggambarkan kerjasama dan saling membantu."},
+{l:3,q:"Baca: “Kantin sekolah menyediakan buah-buahan, susu dan makanan berkhasiat.” Apakah idea utama?",o:["Kantin menjual mainan.","Kantin menyediakan makanan berkhasiat.","Murid tidak makan di kantin.","Kantin ditutup setiap hari."],a:1,e:"Ayat menyatakan jenis makanan berkhasiat yang disediakan."},
+{l:3,q:"Pilih ayat pasif yang betul bagi “Ali membaca buku itu.”",o:["Buku itu dibaca oleh Ali.","Buku itu membaca Ali.","Ali dibaca oleh buku itu.","Buku itu sedang Ali baca oleh."],a:0,e:"Dalam ayat pasif, objek menjadi perkara yang dikenakan perbuatan."},
+{l:3,q:"Apakah tujuan penggunaan kata “sila” dalam ayat “Sila beratur sebelum masuk ke kelas”?",o:["Memberi arahan dengan sopan","Menunjukkan kemarahan","Menyatakan rasa sedih","Menceritakan pengalaman"],a:0,e:"Sila menjadikan arahan lebih sopan."},
+{l:3,q:"Pilih ayat yang paling gramatis.",o:["Para murid-murid sedang berbaris.","Para murid sedang berbaris.","Para murid sedang berbaris-baris.","Para murid-murid sedang berbaris-baris."],a:1,e:"“Para murid” sudah menunjukkan jamak, jadi tidak perlu penggandaan murid."}
+];
+
+let idx=0, stars=0, correct=0, attempts=0, firstTry=0, soundOn=true, answered=false;
+let student="", creator="";
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function toggleSound(){soundOn=!soundOn;document.getElementById('soundBtn').textContent=soundOn?'🔊 Bunyi: ON':'🔇 Bunyi: OFF';}
+function speak(text){if(!soundOn||!('speechSynthesis' in window))return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text);u.lang='ms-MY';u.rate=.93;speechSynthesis.speak(u);}
+function tone(ok){if(!soundOn)return; try{const c=new (window.AudioContext||window.webkitAudioContext)();const o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=ok?740:210;g.gain.setValueAtTime(.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(.14,c.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+(ok?.25:.35));o.start();o.stop(c.currentTime+(ok?.27:.37));}catch(e){}}
+function startGame(){
+ student=document.getElementById('studentName').value.trim()||"Murid Hebat";
+ creator=document.getElementById('creatorName').value.trim()||"Tidak dinyatakan";
+ idx=0;stars=0;correct=0;attempts=0;firstTry=0;answered=false;showScreen('game');render();
+}
+function render(){
+ const q=questions[idx], level=q.l;
+ document.getElementById('level').textContent=`Tahap ${level}`;
+ document.getElementById('qnum').textContent=`Soalan ${idx+1} daripada ${questions.length}`;
+ document.getElementById('question').textContent=q.q;
+ document.getElementById('bar').style.width=((idx)/questions.length*100)+'%';
+ document.getElementById('starCount').textContent=stars;
+ const box=document.getElementById('options');box.innerHTML='';
+ q.o.forEach((t,i)=>{const b=document.createElement('button');b.className='opt';b.textContent=String.fromCharCode(65+i)+'. '+t;b.onclick=()=>answer(i,b);box.appendChild(b)});
+ document.getElementById('feedback').textContent='';document.getElementById('feedback').className='feedback';
+ document.getElementById('nextBtn').style.display='none';answered=false;
+}
+function answer(i,btn){
+ if(answered)return;
+ attempts++;
+ const q=questions[idx], all=[...document.querySelectorAll('.opt')], f=document.getElementById('feedback');
+ if(i===q.a){
+   answered=true;correct++;
+   const prevWrong=all.some(x=>x.classList.contains('wrong'));
+   stars += prevWrong ? 2 : 3;
+   btn.classList.add('correct'); all.forEach(x=>x.disabled=true);
+   f.textContent='✅ Betul! Syabas! '+q.e;f.className='feedback good pop';tone(true);speak('Betul! Syabas!');
+   document.getElementById('starCount').textContent=stars;
+   document.getElementById('nextBtn').textContent=idx===questions.length-1?'🏆 Lihat Keputusan':'Soalan Seterusnya ➜';
+   document.getElementById('nextBtn').style.display='inline-block';
+ }else{
+   btn.classList.add('wrong');btn.disabled=true;f.textContent='❌ Belum tepat. Cuba lagi!';f.className='feedback bad shake';tone(false);speak('Belum tepat. Cuba lagi!');
+ }
+}
+function nextQuestion(){if(idx<questions.length-1){idx++;render()}else finish();}
+function finish(){
+ showScreen('result');document.getElementById('resultName').textContent=student;
+ const pct=Math.round(correct/questions.length*100);
+ document.getElementById('score').textContent=`${correct} / ${questions.length}`;
+ document.getElementById('stars').textContent='⭐'.repeat(Math.min(5,Math.max(1,Math.round(stars/8))));
+ document.getElementById('correctStat').textContent=correct;document.getElementById('attemptStat').textContent=attempts;document.getElementById('percentStat').textContent=pct+'%';
+ document.getElementById('rank').textContent=pct>=90?'🌟 Cemerlang! Bahasa Anda hebat!':pct>=70?'👏 Sangat Baik! Teruskan usaha!':'💪 Teruskan berlatih, anda pasti boleh!';
+ document.getElementById('resultMsg').textContent=pct>=90?'Tahniah! Anda menunjukkan penguasaan yang sangat baik.':pct>=70?'Syabas! Ulang kaji nota dan cuba lagi untuk skor lebih tinggi.':'Jangan putus asa. Gunakan Nota Infografik dan cuba semula.';
+ document.getElementById('creatorResult').textContent=`Pembina: ${creator} • ${document.querySelector('.creator').textContent}`;
+ speak(pct>=70?'Tahniah! Anda berjaya menamatkan permainan.':'Syabas kerana mencuba. Teruskan berlatih!');
+}
+function restart(){startGame();}
+</script>
+</body>
+</html>
